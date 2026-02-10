@@ -3,39 +3,38 @@ using namespace std;
 #include <chrono>
 #include <ctime>
 
-int firstDuplicate(int arr[], int n) {
-    unordered_set<int> seen;
-    for (int i = 0; i < n; i++) {
-        if (seen.find(arr[i]) != seen.end()) {
-            return arr[i];
+void insertionSort(vector<int>& arr, int n) {
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
         }
-        seen.insert(arr[i]);
+        arr[j + 1] = key;
     }
-    return -1; 
 }
 
 int main() {
     int n;
-    int t;
     cin >> n;
-    t = n;
+    int t = n;
 
-    vector<int> durationArray(n + 1);
+    vector<long long> durationArray(n + 1);
 
     cout << "value of n     ->     time taken" << endl;
 
     while (n > 0) {
-        int size = n * 1000;   
-        int* arr = new int[size];
+        int size = n;
 
-       
+        vector<int> arr(size);
         for (int i = 0; i < size; i++) {
-            arr[i] = i + 1;
+            arr[i] = size - i;
         }
-        arr[size - 1] = arr[size / 2];  
 
         auto start = chrono::high_resolution_clock::now();
-        firstDuplicate(arr, size);
+        insertionSort(arr, size);
         auto stop = chrono::high_resolution_clock::now();
 
         auto duration = chrono::duration_cast<chrono::nanoseconds>(stop - start);
@@ -46,16 +45,15 @@ int main() {
              << duration.count()
              << " nanoseconds" << endl;
 
-        delete[] arr;
         n--;
     }
 
-    int sum = 0;
+    long long sum = 0;
     for (auto time : durationArray) {
         sum += time;
     }
 
-    int avg = sum / t;
+    long long avg = sum / t;
     cout << "the average time taken to execute the program is "
          << avg << " nanoseconds";
 

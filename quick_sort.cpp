@@ -3,39 +3,48 @@ using namespace std;
 #include <chrono>
 #include <ctime>
 
-int firstDuplicate(int arr[], int n) {
-    unordered_set<int> seen;
-    for (int i = 0; i < n; i++) {
-        if (seen.find(arr[i]) != seen.end()) {
-            return arr[i];
+int partition(vector<int>& arr, int low, int high) {
+    int pivot = arr[high];   
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            swap(arr[i], arr[j]);
         }
-        seen.insert(arr[i]);
     }
-    return -1; 
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+void quickSort(vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
 }
 
 int main() {
     int n;
-    int t;
     cin >> n;
-    t = n;
+    int t = n;
 
-    vector<int> durationArray(n + 1);
+    vector<long long> durationArray(n + 1);
 
     cout << "value of n     ->     time taken" << endl;
 
     while (n > 0) {
-        int size = n * 1000;   
-        int* arr = new int[size];
+        int size = n;
 
-       
+        vector<int> arr(size);
         for (int i = 0; i < size; i++) {
-            arr[i] = i + 1;
+            arr[i] = rand() % 10000;
         }
-        arr[size - 1] = arr[size / 2];  
 
         auto start = chrono::high_resolution_clock::now();
-        firstDuplicate(arr, size);
+        quickSort(arr, 0, size - 1);
         auto stop = chrono::high_resolution_clock::now();
 
         auto duration = chrono::duration_cast<chrono::nanoseconds>(stop - start);
@@ -46,16 +55,15 @@ int main() {
              << duration.count()
              << " nanoseconds" << endl;
 
-        delete[] arr;
         n--;
     }
 
-    int sum = 0;
+    long long sum = 0;
     for (auto time : durationArray) {
         sum += time;
     }
 
-    int avg = sum / t;
+    long long avg = sum / t;
     cout << "the average time taken to execute the program is "
          << avg << " nanoseconds";
 

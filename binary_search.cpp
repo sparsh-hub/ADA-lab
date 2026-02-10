@@ -3,39 +3,45 @@ using namespace std;
 #include <chrono>
 #include <ctime>
 
-int firstDuplicate(int arr[], int n) {
-    unordered_set<int> seen;
-    for (int i = 0; i < n; i++) {
-        if (seen.find(arr[i]) != seen.end()) {
-            return arr[i];
-        }
-        seen.insert(arr[i]);
+int binarySearch(vector<int>& arr, int left, int right, int key) {
+    if (left > right) {
+        return -1;
     }
-    return -1; 
+
+    int mid = left + (right - left) / 2;
+
+    if (arr[mid] == key) {
+        return mid;
+    } 
+    else if (key < arr[mid]) {
+        return binarySearch(arr, left, mid - 1, key);
+    } 
+    else {
+        return binarySearch(arr, mid + 1, right, key);
+    }
 }
 
 int main() {
     int n;
-    int t;
     cin >> n;
-    t = n;
+    int t = n;
 
-    vector<int> durationArray(n + 1);
+    vector<long long> durationArray(n + 1);
 
     cout << "value of n     ->     time taken" << endl;
 
     while (n > 0) {
-        int size = n * 1000;   
-        int* arr = new int[size];
+        int size = n;
 
-       
+        vector<int> arr(size);
         for (int i = 0; i < size; i++) {
             arr[i] = i + 1;
         }
-        arr[size - 1] = arr[size / 2];  
+
+        int key = size; 
 
         auto start = chrono::high_resolution_clock::now();
-        firstDuplicate(arr, size);
+        binarySearch(arr, 0, size - 1, key);
         auto stop = chrono::high_resolution_clock::now();
 
         auto duration = chrono::duration_cast<chrono::nanoseconds>(stop - start);
@@ -46,16 +52,15 @@ int main() {
              << duration.count()
              << " nanoseconds" << endl;
 
-        delete[] arr;
         n--;
     }
 
-    int sum = 0;
+    long long sum = 0;
     for (auto time : durationArray) {
         sum += time;
     }
 
-    int avg = sum / t;
+    long long avg = sum / t;
     cout << "the average time taken to execute the program is "
          << avg << " nanoseconds";
 

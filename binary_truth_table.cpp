@@ -20,7 +20,8 @@ int main() {
     cin >> n;
     t = n;
     
-    
+    ofstream file("timings.csv");
+    file << "n,time\n";
     vector<int> durationArray(n);
     cout << "value of n     -> " << "     time taken" << endl;
     while(n>0){
@@ -33,6 +34,7 @@ int main() {
         auto duration = chrono::duration_cast<chrono::nanoseconds>(stop - start);
         durationArray[n] = duration.count();
         cout << "     " << n << "         ->      " << duration.count() << " nanoseconds" << endl;
+        file << n << "," << duration.count() << "\n";
         n--;
     }
     int sum = 0;
@@ -41,6 +43,6 @@ int main() {
     }
     int avg = sum/(t);
     cout <<"the average time taken to execute the program is " << avg;
-    
+    file.close();
     return 0;
 }
